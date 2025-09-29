@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Ultra Secure Payment Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .logo-section h1 {
+            color: #4facfe;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .logo-section p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: 10px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #555;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-link .icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h2 {
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 4px solid;
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card.invoices {
+            border-left-color: #4facfe;
+        }
+        
+        .stat-card.verified {
+            border-left-color: #28a745;
+        }
+        
+        .stat-card.pending {
+            border-left-color: #ffc107;
+        }
+        
+        .stat-card.blocked {
+            border-left-color: #dc3545;
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.7;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .invoices-section, .verification-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .invoices-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .invoices-table th,
+        .invoices-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .invoices-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .invoices-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            background: transparent;
+            border: none;
+        }
+        
+        .status-pending {
+            color: #856404;
+        }
+        
+        .status-verified {
+            color: #155724;
+        }
+        
+        .status-paid {
+            color: #17a2b8;
+        }
+        
+        .verification-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .recent-activity {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #4facfe;
+        }
+        
+        .activity-time {
+            font-size: 0.8rem;
+            color: #666;
+            float: right;
+        }
+        
+        .refresh-btn {
+            background: transparent;
+            border: 2px solid #4facfe;
+            color: #4facfe;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .refresh-btn:hover {
+            background: #4facfe;
+            color: white;
+        }
+        
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #28a745;
+            font-size: 0.9rem;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        /* Modal Popup Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .modal-title {
+            font-size: 1.4rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+            padding: 5px;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            color: #dc3545;
+            background: #f8f9fa;
+        }
+        
+        .modal-body {
+            line-height: 1.6;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+            min-width: 120px;
+        }
+        
+        .detail-value {
+            color: #333;
+            font-family: monospace;
+            flex: 1;
+            text-align: right;
+        }
+        
+        .invoice-number-display {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #4facfe;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+        
+        .amount-display {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .status-display {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 70px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-sm::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-sm:hover::before {
+            left: 100%;
+        }
+        
+        .btn-approve {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+            background: linear-gradient(135deg, #218838 0%, #1db584 100%);
+        }
+        
+        .btn-approve:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-reject {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+        }
+        
+        .btn-reject:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4);
+            background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+        }
+        
+        .btn-reject:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+        }
+        
+        .btn-view {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+        
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+            background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+        }
+        
+        .btn-view:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+        }
+        
+        .btn-sm:disabled {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-sm:disabled::before {
+            display: none;
+        }
+        
+        /* Enhanced status badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: transparent;
+            border: none;
+        }
+        
+        .status-pending {
+            color: #856404;
+        }
+        
+        .status-verified {
+            color: #155724;
+        }
+        
+        .status-approved {
+            color: #28a745;
+        }
+        
+        .status-rejected {
+            color: #dc3545;
+        }
+        
+        .status-paid {
+            color: #17a2b8;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-section">
+                <h1>🛡️ Admin Panel</h1>
+                <p>Ultra Secure Payment Portal</p>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active" onclick="showSection('dashboard')">
+                        <span class="icon">📊</span>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#invoices" class="nav-link" onclick="showSection('invoices')">
+                        <span class="icon">📋</span>
+                        Invoices
+                    </a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a href="#verification" class="nav-link" onclick="showSection('verification')">
+                        <span class="icon">✅</span>
+                        Verification
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#settings" class="nav-link" onclick="showSection('settings')">
+                        <span class="icon">⚙️</span>
+                        Settings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <span class="icon">🏠</span>
+                        Back to Portal
+                    </a>
+                </li> -->
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section">
+                <div class="header">
+                    <h2>
+                        Admin Dashboard
+                        <span class="live-indicator">
+                            <span class="live-dot"></span>
+                            Live
+                        </span>
+                    </h2>
+                    <button class="refresh-btn" onclick="refreshData()">
+                        🔄 Refresh
+                    </button>
+                </div>
+                
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card invoices">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-number" id="totalInvoices">0</div>
+                                <div class="stat-label">Total Invoices</div>
+                            </div>
+                            <div class="stat-icon">📋</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card verified">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-number" id="verifiedInvoices">0</div>
+                                <div class="stat-label">Verified Invoices</div>
+                            </div>
+                            <div class="stat-icon">✅</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card pending">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-number" id="pendingInvoices">0</div>
+                                <div class="stat-label">Pending Invoices</div>
+                            </div>
+                            <div class="stat-icon">⏳</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card blocked">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-number" id="blockedAttempts">0</div>
+                                <div class="stat-label">Blocked Attempts</div>
+                            </div>
+                            <div class="stat-icon">🚫</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Recent Invoices (Full Width) -->
+                    <div class="invoices-section" style="grid-column: 1 / -1;">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                📋 Recent Invoices
+                            </h3>
+                        </div>
+                        
+                        <table class="invoices-table">
+                            <thead>
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Customer</th>
+                                    <th>Email</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Time</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoicesTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions Section (Below Invoice Table) -->
+                <div class="dashboard-grid" style="margin-top: 30px;">
+                    <!-- Quick Actions Panel -->
+                    <div class="verification-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                🔍 Quick Actions
+                            </h3>
+                        </div>
+                        
+                        <div class="verification-form">
+                            <div class="form-group">
+                                <label for="adminInvoiceInput">Quick Invoice Lookup:</label>
+                                <input type="text" id="adminInvoiceInput" placeholder="INV-XXXXX-XXXXX-XX" style="text-transform: uppercase;">
+                            </div>
+                            
+                            <button class="btn btn-primary" onclick="verifyInvoiceAdmin()" style="width: 100%;">
+                                🔍 Lookup Invoice
+                            </button>
+                        </div>
+                        
+                        <div id="verificationResult"></div>
+                        
+                        <!-- Quick Stats -->
+                        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <h5 style="margin-bottom: 10px; color: #555;">📊 Quick Stats</h5>
+                            <div style="font-size: 0.9rem;">
+                                <div>🟢 Approved: <span id="quickApprovedCount">0</span></div>
+                                <div>🟡 Pending: <span id="quickPendingCount">0</span></div>
+                                <div>🔴 Rejected: <span id="quickRejectedCount">0</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity Panel -->
+                    <div class="verification-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                🔔 Recent Activity
+                            </h3>
+                        </div>
+                        
+                        <div class="recent-activity" id="recentActivity">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Invoices Section -->
+            <div id="invoices-section" class="hidden">
+                <div class="header">
+                    <h2>📋 All Invoices</h2>
+                    <button class="refresh-btn" onclick="refreshData()">
+                        🔄 Refresh
+                    </button>
+                </div>
+                
+                <div class="invoices-section">
+                    <div class="section-header">
+                        <h3 class="section-title">All Generated Invoices</h3>
+                    </div>
+                    
+                    <table class="invoices-table">
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Customer Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Amount (Rs.)</th>
+                                <th>Status</th>
+                                <th>Generated Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allInvoicesTableBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Verification Section -->
+            <div id="verification-section" class="hidden">
+                <div class="header">
+                    <h2>✅ Invoice Verification Center</h2>
+                </div>
+                
+                <div class="verification-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Manual Invoice Verification</h3>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>ℹ️ How it works:</strong><br>
+                        1. User generates invoice on payment portal<br>
+                        2. Invoice appears in admin dashboard<br>
+                        3. User provides invoice number for verification<br>
+                        4. Admin manually verifies and approves<br>
+                        5. User can proceed with payment
+                    </div>
+                    
+                    <div class="verification-form">
+                        <div class="form-group">
+                            <label for="verifyInvoiceInput">Invoice Number to Verify:</label>
+                            <input type="text" id="verifyInvoiceInput" placeholder="Enter invoice number" style="text-transform: uppercase;">
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" onclick="searchInvoice()" style="flex: 1;">
+                                🔍 Search Invoice
+                            </button>
+                            <button class="btn btn-success" onclick="approveInvoice()" style="flex: 1;" disabled id="approveBtn">
+                                ✅ Approve
+                            </button>
+                            <button class="btn btn-danger" onclick="rejectInvoice()" style="flex: 1;" disabled id="rejectBtn">
+                                ❌ Reject
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="invoiceDetails"></div>
+                </div>
+            </div>
+            
+            <!-- Settings Section -->
+            <div id="settings-section" class="hidden">
+                <div class="header">
+                    <h2>⚙️ Admin Settings</h2>
+                </div>
+                
+                <div class="verification-section">
+                    <div class="section-header">
+                        <h3 class="section-title">System Configuration</h3>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>🔧 Admin Configuration Panel</strong><br>
+                        Configure system settings and security parameters.
+                    </div>
+                    
+                    <div class="verification-form">
+                        <div class="form-group">
+                            <label>Auto-refresh Interval (seconds):</label>
+                            <input type="number" id="refreshInterval" value="5" min="1" max="60">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Maximum Invoice Display:</label>
+                            <input type="number" id="maxDisplay" value="10" min="5" max="100">
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="saveSettings()">
+                            💾 Save Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Details Modal -->
+    <div id="invoiceModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">📋 Invoice Details</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin Dashboard JavaScript
+        let invoicesData = [];
+        let activityLog = [];
+        let refreshInterval = 5000; // 5 seconds
+        let autoRefreshTimer;
+
+        // API Base URL
+        const API_BASE_URL = 'http://localhost:3000/api';
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshData();
+            startAutoRefresh();
+        });
+
+        // Show/Hide sections
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('[id$="-section"]').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.remove('hidden');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Fetch data from server
+        async function fetchInvoices() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/invoices`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    invoicesData = result.data;
+                    updateDashboard();
+                }
+            } catch (error) {
+                console.error('Error fetching invoices:', error);
+                addActivity('Failed to fetch invoices', 'error');
+            }
+        }
+
+        // Update dashboard with latest data
+        function updateDashboard() {
+            updateStatistics();
+            updateInvoicesTable();
+            updateAllInvoicesTable();
+        }
+
+        // Update statistics cards
+        function updateStatistics() {
+            const total = invoicesData.length;
+            const verified = invoicesData.filter(inv => inv.status === 'verified' || inv.status === 'approved').length;
+            const pending = invoicesData.filter(inv => inv.status === 'pending' || inv.status === 'verified').length;
+            const approved = invoicesData.filter(inv => inv.status === 'approved').length;
+            const rejected = invoicesData.filter(inv => inv.status === 'rejected').length;
+            const blocked = 0; // Can be enhanced with actual blocked attempts data
+
+            document.getElementById('totalInvoices').textContent = total;
+            document.getElementById('verifiedInvoices').textContent = verified;
+            document.getElementById('pendingInvoices').textContent = pending;
+            document.getElementById('blockedAttempts').textContent = blocked;
+            
+            // Update quick stats
+            document.getElementById('quickApprovedCount').textContent = approved;
+            document.getElementById('quickPendingCount').textContent = pending;
+            document.getElementById('quickRejectedCount').textContent = rejected;
+        }
+
+        // Update recent invoices table
+        function updateInvoicesTable() {
+            const tbody = document.getElementById('invoicesTableBody');
+            const recentInvoices = invoicesData.slice(0, 10); // Show last 10
+
+            tbody.innerHTML = recentInvoices.map(invoice => {
+                const actionButtons = getActionButtons(invoice);
+                return `
+                <tr>
+                    <td style="font-family: monospace; font-weight: bold;">${invoice.invoiceNumber}</td>
+                    <td>${invoice.customerName}</td>
+                    <td>${invoice.customerEmail}</td>
+                    <td>Rs. ${invoice.paymentAmount.toFixed(2)}</td>
+                    <td><span class="status-badge status-${invoice.status}">${invoice.status.toUpperCase()}</span></td>
+                    <td>${new Date(invoice.timestamp).toLocaleTimeString()}</td>
+                    <td>${actionButtons}</td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        // Generate action buttons based on invoice status
+        function getActionButtons(invoice) {
+            const status = invoice.status;
+            const invoiceNumber = invoice.invoiceNumber;
+            
+            if (status === 'approved') {
+                return `
+                    <div class="action-buttons">
+                        <button class="btn-sm btn-view" onclick="viewInvoiceDetails('${invoiceNumber}')">View</button>
+                        <span style="color: #28a745; font-size: 0.8rem;">✅ Approved</span>
+                    </div>
+                `;
+            } else if (status === 'rejected') {
+                return `
+                    <div class="action-buttons">
+                        <button class="btn-sm btn-view" onclick="viewInvoiceDetails('${invoiceNumber}')">View</button>
+                        <span style="color: #dc3545; font-size: 0.8rem;">❌ Rejected</span>
+                    </div>
+                `;
+            } else if (status === 'verified' || status === 'pending') {
+                return `
+                    <div class="action-buttons">
+                        <button class="btn-sm btn-approve" onclick="quickApprove('${invoiceNumber}')">Approve</button>
+                        <button class="btn-sm btn-reject" onclick="quickReject('${invoiceNumber}')">Reject</button>
+                        <button class="btn-sm btn-view" onclick="viewInvoiceDetails('${invoiceNumber}')">View</button>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="action-buttons">
+                        <button class="btn-sm btn-view" onclick="viewInvoiceDetails('${invoiceNumber}')">View</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Quick approve function
+        async function quickApprove(invoiceNumber) {
+            if (!confirm(`Are you sure you want to approve invoice ${invoiceNumber}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/approve-invoice`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ invoiceNumber })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    addActivity(`Invoice ${invoiceNumber} approved`, 'success');
+                    refreshData(); // Refresh to show updated status
+                    
+                    // Show success notification
+                    showNotification(`✅ Invoice ${invoiceNumber} approved successfully!`, 'success');
+                } else {
+                    throw new Error(result.message || 'Failed to approve invoice');
+                }
+
+            } catch (error) {
+                addActivity(`Failed to approve invoice ${invoiceNumber}`, 'error');
+                showNotification('❌ ' + error.message, 'error');
+            }
+        }
+
+        // Quick reject function
+        async function quickReject(invoiceNumber) {
+            if (!confirm(`Are you sure you want to reject invoice ${invoiceNumber}?\n\nThis action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/reject-invoice`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ invoiceNumber })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    addActivity(`Invoice ${invoiceNumber} rejected`, 'error');
+                    refreshData(); // Refresh to show updated status
+                    
+                    // Show success notification
+                    showNotification(`❌ Invoice ${invoiceNumber} rejected`, 'error');
+                } else {
+                    throw new Error(result.message || 'Failed to reject invoice');
+                }
+
+            } catch (error) {
+                addActivity(`Failed to reject invoice ${invoiceNumber}`, 'error');
+                showNotification('❌ ' + error.message, 'error');
+            }
+        }
+
+        // Show notification function
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 300px;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.innerHTML = message;
+            
+            // Add CSS for animation
+            if (!document.getElementById('notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Update all invoices table
+        function updateAllInvoicesTable() {
+            const tbody = document.getElementById('allInvoicesTableBody');
+
+            tbody.innerHTML = invoicesData.map(invoice => {
+                const actionButtons = getActionButtons(invoice);
+                return `
+                <tr>
+                    <td style="font-family: monospace; font-weight: bold;">${invoice.invoiceNumber}</td>
+                    <td>${invoice.customerName}</td>
+                    <td>${invoice.customerEmail}</td>
+                    <td>${invoice.customerPhone}</td>
+                    <td>Rs. ${invoice.paymentAmount.toFixed(2)}</td>
+                    <td><span class="status-badge status-${invoice.status}">${invoice.status.toUpperCase()}</span></td>
+                    <td>${new Date(invoice.timestamp).toLocaleString()}</td>
+                    <td>${actionButtons}</td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        // Manual invoice verification (now just lookup)
+        async function verifyInvoiceAdmin() {
+            const invoiceNumber = document.getElementById('adminInvoiceInput').value.trim().toUpperCase();
+            const resultDiv = document.getElementById('verificationResult');
+
+            if (!invoiceNumber) {
+                showAlert(resultDiv, 'Please enter an invoice number', 'danger');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/invoice/${invoiceNumber}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const invoice = result.data;
+                    const actionButtons = getActionButtons(invoice);
+                    
+                    showAlert(resultDiv, `
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                            <h4>📋 Invoice Details</h4>
+                            <strong>Invoice #:</strong> ${invoice.invoiceNumber}<br>
+                            <strong>Customer:</strong> ${invoice.customerName}<br>
+                            <strong>Email:</strong> ${invoice.customerEmail}<br>
+                            <strong>Phone:</strong> ${invoice.customerPhone}<br>
+                            <strong>Amount:</strong> Rs. ${invoice.paymentAmount.toFixed(2)}<br>
+                            <strong>Status:</strong> <span class="status-badge status-${invoice.status}">${invoice.status.toUpperCase()}</span><br>
+                            <strong>Generated:</strong> ${new Date(invoice.timestamp).toLocaleString()}<br>
+                            <div style="margin-top: 10px;">
+                                ${actionButtons}
+                            </div>
+                        </div>
+                    `, 'info');
+                    
+                    addActivity(`Invoice ${invoiceNumber} looked up by admin`, 'success');
+                    document.getElementById('adminInvoiceInput').value = '';
+                } else {
+                    showAlert(resultDiv, '❌ ' + result.message, 'danger');
+                    addActivity(`Failed lookup attempt for ${invoiceNumber}`, 'error');
+                }
+
+            } catch (error) {
+                showAlert(resultDiv, '❌ Error looking up invoice: ' + error.message, 'danger');
+            }
+        }
+
+        // Search for specific invoice
+        async function searchInvoice() {
+            const invoiceNumber = document.getElementById('verifyInvoiceInput').value.trim().toUpperCase();
+            const detailsDiv = document.getElementById('invoiceDetails');
+
+            if (!invoiceNumber) {
+                showAlert(detailsDiv, 'Please enter an invoice number', 'danger');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/invoice/${invoiceNumber}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const invoice = result.data;
+                    detailsDiv.innerHTML = `
+                        <div class="alert alert-info">
+                            <h4>📋 Invoice Details</h4>
+                            <strong>Invoice #:</strong> ${invoice.invoiceNumber}<br>
+                            <strong>Customer:</strong> ${invoice.customerName}<br>
+                            <strong>Email:</strong> ${invoice.customerEmail}<br>
+                            <strong>Phone:</strong> ${invoice.customerPhone}<br>
+                            <strong>Amount:</strong> Rs. ${invoice.paymentAmount.toFixed(2)}<br>
+                            <strong>Status:</strong> <span class="status-badge status-${invoice.status}">${invoice.status.toUpperCase()}</span><br>
+                            <strong>Generated:</strong> ${new Date(invoice.timestamp).toLocaleString()}
+                        </div>
+                    `;
+                    
+                    // Enable action buttons
+                    document.getElementById('approveBtn').disabled = false;
+                    document.getElementById('rejectBtn').disabled = false;
+                } else {
+                    showAlert(detailsDiv, '❌ ' + result.message, 'danger');
+                    document.getElementById('approveBtn').disabled = true;
+                    document.getElementById('rejectBtn').disabled = true;
+                }
+
+            } catch (error) {
+                showAlert(detailsDiv, '❌ Error searching invoice: ' + error.message, 'danger');
+            }
+        }
+
+        // Approve invoice
+        async function approveInvoice() {
+            const invoiceNumber = document.getElementById('verifyInvoiceInput').value.trim().toUpperCase();
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/approve-invoice`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ invoiceNumber })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert(document.getElementById('invoiceDetails'), '✅ Invoice approved successfully!', 'success');
+                    addActivity(`Invoice ${invoiceNumber} approved by admin`, 'success');
+                    document.getElementById('verifyInvoiceInput').value = '';
+                    document.getElementById('approveBtn').disabled = true;
+                    document.getElementById('rejectBtn').disabled = true;
+                    refreshData();
+                } else {
+                    showAlert(document.getElementById('invoiceDetails'), '❌ ' + result.message, 'danger');
+                }
+
+            } catch (error) {
+                showAlert(document.getElementById('invoiceDetails'), '❌ Error approving invoice: ' + error.message, 'danger');
+            }
+        }
+
+        // Reject invoice
+        async function rejectInvoice() {
+            const invoiceNumber = document.getElementById('verifyInvoiceInput').value.trim().toUpperCase();
+            
+            if (!confirm('Are you sure you want to reject this invoice?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/reject-invoice`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ invoiceNumber })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert(document.getElementById('invoiceDetails'), '❌ Invoice rejected', 'danger');
+                    addActivity(`Invoice ${invoiceNumber} rejected by admin`, 'error');
+                    document.getElementById('verifyInvoiceInput').value = '';
+                    document.getElementById('approveBtn').disabled = true;
+                    document.getElementById('rejectBtn').disabled = true;
+                    refreshData();
+                } else {
+                    showAlert(document.getElementById('invoiceDetails'), '❌ ' + result.message, 'danger');
+                }
+
+            } catch (error) {
+                showAlert(document.getElementById('invoiceDetails'), '❌ Error rejecting invoice: ' + error.message, 'danger');
+            }
+        }
+
+        // View invoice details
+        function viewInvoiceDetails(invoiceNumber) {
+            const invoice = invoicesData.find(inv => inv.invoiceNumber === invoiceNumber);
+            if (invoice) {
+                showInvoiceModal(invoice);
+            }
+        }
+
+        // Show invoice modal
+        function showInvoiceModal(invoice) {
+            const modalBody = document.getElementById('modalBody');
+            const statusClass = `status-${invoice.status}`;
+            
+            modalBody.innerHTML = `
+                <div class="detail-row">
+                    <span class="detail-label">Invoice Number:</span>
+                    <span class="detail-value invoice-number-display">${invoice.invoiceNumber}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Customer Name:</span>
+                    <span class="detail-value">${invoice.customerName}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email Address:</span>
+                    <span class="detail-value">${invoice.customerEmail}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone Number:</span>
+                    <span class="detail-value">${invoice.customerPhone}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Payment Amount:</span>
+                    <span class="detail-value amount-display">Rs. ${invoice.paymentAmount.toFixed(2)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value">
+                        <span class="status-badge ${statusClass}">${invoice.status.toUpperCase()}</span>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Generated Time:</span>
+                    <span class="detail-value">${new Date(invoice.timestamp).toLocaleString()}</span>
+                </div>
+                ${invoice.approvedTime ? `
+                <div class="detail-row">
+                    <span class="detail-label">Approved Time:</span>
+                    <span class="detail-value">${new Date(invoice.approvedTime).toLocaleString()}</span>
+                </div>
+                ` : ''}
+                ${invoice.transactionId ? `
+                <div class="detail-row">
+                    <span class="detail-label">Transaction ID:</span>
+                    <span class="detail-value">${invoice.transactionId}</span>
+                </div>
+                ` : ''}
+                ${invoice.paymentTimestamp ? `
+                <div class="detail-row">
+                    <span class="detail-label">Payment Time:</span>
+                    <span class="detail-value">${new Date(invoice.paymentTimestamp).toLocaleString()}</span>
+                </div>
+                ` : ''}
+            `;
+            
+            document.getElementById('invoiceModal').classList.add('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('invoiceModal').classList.remove('show');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('invoiceModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Add activity to log
+        function addActivity(message, type = 'info') {
+            const activity = {
+                message,
+                type,
+                timestamp: new Date()
+            };
+            
+            activityLog.unshift(activity);
+            activityLog = activityLog.slice(0, 10); // Keep only last 10
+            
+            updateActivityLog();
+        }
+
+        // Update activity log display
+        function updateActivityLog() {
+            const container = document.getElementById('recentActivity');
+            
+            container.innerHTML = activityLog.map(activity => `
+                <div class="activity-item">
+                    <span class="activity-time">${activity.timestamp.toLocaleTimeString()}</span>
+                    ${activity.message}
+                </div>
+            `).join('');
+        }
+
+        // Show alert message
+        function showAlert(container, message, type) {
+            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        }
+
+        // Refresh all data
+        async function refreshData() {
+            addActivity('Refreshing dashboard data...', 'info');
+            await fetchInvoices();
+            addActivity('Dashboard data refreshed', 'success');
+        }
+
+        // Auto refresh functionality
+        function startAutoRefresh() {
+            autoRefreshTimer = setInterval(refreshData, refreshInterval);
+        }
+
+        function stopAutoRefresh() {
+            clearInterval(autoRefreshTimer);
+        }
+
+        // Save settings
+        function saveSettings() {
+            const newInterval = parseInt(document.getElementById('refreshInterval').value) * 1000;
+            const maxDisplay = parseInt(document.getElementById('maxDisplay').value);
+            
+            refreshInterval = newInterval;
+            
+            // Restart auto refresh with new interval
+            stopAutoRefresh();
+            startAutoRefresh();
+            
+            addActivity(`Settings saved: Refresh interval ${newInterval/1000}s, Max display ${maxDisplay}`, 'success');
+            alert('⚙️ Settings saved successfully!');
+        }
+
+        // Format invoice number input
+        document.getElementById('adminInvoiceInput').addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase();
+        });
+
+        document.getElementById('verifyInvoiceInput').addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase();
+        });
+    </script>
+</body>
+</html>

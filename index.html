@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultra Secure Payment Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 600px;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .security-status {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .security-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #28a745;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .step {
+            margin-bottom: 30px;
+        }
+        
+        .step h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .invoice-display {
+            background: #f8f9fa;
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .invoice-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+        }
+        
+        .invoice-timer {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .input-strength {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .strength-bar {
+            height: 100%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40,167,69,0.3);
+        }
+        
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .payment-success {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .step-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+        }
+        
+        .step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: -50%;
+            width: 100%;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        
+        .step-item.active::after {
+            background: #007bff;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #666;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step-item.active .step-number {
+            background: #007bff;
+            color: white;
+        }
+        
+        .step-item.completed .step-number {
+            background: #28a745;
+            color: white;
+        }
+        
+        .security-features {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .security-features h4 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .security-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .captcha-container {
+            background: #f8f9fa;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .captcha-question {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        
+        .otp-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+        }
+        
+        .attempts-left {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .blocked {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .activity-log {
+            background: #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .activity-log h5 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        
+        .log-entry {
+            padding: 5px 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            border-left: 3px solid #007bff;
+        }
+        
+        .fingerprint-canvas {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            margin: 15px 0;
+            cursor: crosshair;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Ultra Secure Payment Portal</h1>
+            <p>Multi-Layer Security System</p>
+            <div class="security-status">
+                <div class="security-indicator"></div>
+                <span>Secure Connection Active</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Security Features Display -->
+            <div class="security-features">
+                <h4>🔐 Active Security Features</h4>
+                <div class="security-list">
+                    <div>✅ Invoice-Based Authentication</div>
+                    <div>✅ Session Timeout Protection</div>
+                    <div>✅ Rate Limiting</div>
+                    <div>✅ CAPTCHA Verification</div>
+                    <div>✅ OTP Validation</div>
+                    <div>✅ Device Fingerprinting</div>
+                    <div>✅ Activity Monitoring</div>
+                    <div>✅ Encryption Protection</div>
+                </div>
+            </div>
+
+            <!-- Activity Log -->
+            <div class="activity-log hidden" id="activityLog">
+                <h5>🔍 Security Activity Log</h5>
+                <div id="logEntries"></div>
+            </div>
+            
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step-item active" id="step1-indicator">
+                    <div class="step-number">1</div>
+                    <small>Identity Check</small>
+                </div>
+                <div class="step-item" id="step2-indicator">
+                    <div class="step-number">2</div>
+                    <small>Invoice Auth</small>
+                </div>
+                <div class="step-item" id="step2_5-indicator">
+                    <div class="step-number">3</div>
+                    <small>Admin Approval</small>
+                </div>
+                <div class="step-item" id="step3-indicator">
+                    <div class="step-number">4</div>
+                    <small>Multi-Factor</small>
+                </div>
+                <div class="step-item" id="step4-indicator">
+                    <div class="step-number">5</div>
+                    <small>Payment</small>
+                </div>
+            </div>
+            
+            <!-- Step 0: Device Verification -->
+            <div id="step0" class="step">
+                <h3>🖥️ Device Security Check</h3>
+                <div class="alert alert-info">
+                    Verifying your device security and creating digital fingerprint...
+                </div>
+                <canvas id="fingerprintCanvas" class="fingerprint-canvas" width="400" height="150"></canvas>
+                <p style="text-align: center; margin: 15px 0;">
+                    <small>Please draw a signature or pattern above to verify your identity</small>
+                </p>
+                <button class="btn btn-primary" onclick="verifyDevice()" disabled id="deviceVerifyBtn">
+                    🔍 Verify Device
+                </button>
+            </div>
+            
+            <!-- Step 1: Enhanced Identity Verification -->
+            <div id="step1" class="step hidden">
+                <h3>👤 Enhanced Identity Verification</h3>
+                <div id="attemptsLeft" class="attempts-left">
+                    Verification Attempts Remaining: <span id="attemptsCount">3</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="customerName">Full Name (as per ID):</label>
+                    <input type="text" id="customerName" placeholder="Enter your complete legal name" required>
+                    <div class="input-strength">
+                        <div class="strength-bar" id="nameStrength"></div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="customerEmail">Email Address:</label>
+                    <input type="email" id="customerEmail" placeholder="Enter verified email address" required>
+                    <div class="input-strength">
+                        <div class="strength-bar" id="emailStrength"></div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="customerPhone">Mobile Number:</label>
+                    <input type="tel" id="customerPhone" placeholder="+94771234567" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="paymentAmount">Payment Amount (Rs.):</label>
+                    <input type="number" id="paymentAmount" placeholder="Enter amount" min="1" max="100000" required>
+                </div>
+                
+                <!-- CAPTCHA -->
+                <div class="captcha-container">
+                    <div class="captcha-question" id="captchaQuestion">5 + 3 = ?</div>
+                    <input type="number" id="captchaAnswer" placeholder="Enter answer" required>
+                </div>
+                
+                <button class="btn btn-primary" onclick="generateInvoice()" id="generateBtn">
+                    🎫 Generate Secure Invoice
+                </button>
+            </div>
+            
+            <!-- Step 2: Invoice Verification with OTP -->
+            <div id="step2" class="step hidden">
+                <h3>📋 Invoice & OTP Verification</h3>
+                <div class="invoice-display">
+                    <div class="invoice-timer" id="invoiceTimer">10:00</div>
+                    <p><strong>Your Secure Invoice:</strong></p>
+                    <div class="invoice-number" id="displayInvoiceNumber">INV-XXXX-XXXX</div>
+                    <div class="alert alert-warning">
+                        <strong>⚠️ Security Notice:</strong> Invoice expires in 10 minutes. Keep this number confidential.
+                    </div>
+                </div>
+                
+                <h4>� Email OTP Verification</h4>
+                <div class="alert alert-info">
+                    OTP sent to <strong id="maskedEmail">user****@example.com</strong>
+                </div>
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" id="otp1">
+                    <input type="text" class="otp-input" maxlength="1" id="otp2">
+                    <input type="text" class="otp-input" maxlength="1" id="otp3">
+                    <input type="text" class="otp-input" maxlength="1" id="otp4">
+                </div>
+                <button class="btn btn-primary" onclick="resendOTP()" id="resendBtn">
+                    � Resend OTP (60s)
+                </button>
+                
+                <h4>🔢 Enter Invoice Number</h4>
+                <div class="input-group">
+                    <label for="invoiceInput">Invoice Number:</label>
+                    <input type="text" id="invoiceInput" placeholder="Enter the invoice number shown above" required>
+                </div>
+                <button class="btn btn-primary" onclick="verifyInvoiceAndOTP()">
+                    ✅ Verify Invoice & OTP
+                </button>
+                <div id="verificationMessage"></div>
+            </div>
+            
+            <!-- Step 2.5: Admin Verification (New Step) -->
+            <div id="step2_5" class="step hidden">
+                <h3>🔐 Admin Verification Required</h3>
+                <div class="alert alert-info">
+                    <strong>📋 Administrative Approval</strong><br>
+                    Your invoice has been generated and OTP verified. Now awaiting admin approval for enhanced security.
+                </div>
+                
+                <div class="invoice-display">
+                    <p><strong>Your Invoice (Pending Admin Approval):</strong></p>
+                    <div class="invoice-number" id="adminVerifyInvoiceNumber">INV-XXXX-XXXX</div>
+                    <div class="alert alert-warning">
+                        <strong>⏳ Please wait:</strong> An administrator will verify your invoice shortly. The system is automatically checking for approval.
+                    </div>
+                </div>
+
+                <div id="adminVerificationMessage"></div>
+                
+                <div class="alert alert-success" style="margin-top: 20px;">
+                    <strong>🔄 Automatic Status Checking</strong><br>
+                    ✅ System is automatically checking for admin approval every few seconds<br>
+                    ✅ You will be redirected automatically when approved<br>
+                    ✅ No need to manually refresh or re-enter invoice number
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <a href="/admin" target="_blank" class="btn btn-primary" style="background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%); text-decoration: none; display: inline-block;">
+                        🖥️ Open Admin Dashboard
+                    </a>
+                </div>
+                
+                <div class="input-group" style="margin-top: 20px; opacity: 0.7;">
+                    <label for="userInvoiceVerify">Manual Check (Optional - system checks automatically):</label>
+                    <input type="text" id="userInvoiceVerify" placeholder="Enter your invoice number" style="text-transform: uppercase;">
+                </div>
+                
+                <button class="btn btn-primary" onclick="checkAdminApproval()" id="checkApprovalBtn" style="opacity: 0.7;">
+                    🔍 Manual Status Check (Optional)
+                </button>
+                
+                <div class="alert alert-info" style="margin-top: 20px; font-size: 0.9rem;">
+                    <strong>📝 What's happening:</strong><br>
+                    1. Your invoice has been sent to the admin dashboard<br>
+                    2. System is automatically checking for approval status<br>
+                    3. Admin will verify and approve your invoice<br>
+                    4. You will be automatically redirected when approved<br>
+                    5. No action required from you - just wait!
+                </div>
+            </div>
+            
+            <!-- Step 3: Additional Security Checks -->
+            <div id="step3" class="step hidden">
+                <h3>🔐 Additional Security Verification</h3>
+                <div class="alert alert-success">
+                    <strong>✅ Primary Verification Completed!</strong><br>
+                    Additional security checks required for payment processing.
+                </div>
+                
+                <div class="input-group">
+                    <label for="securityQuestion">Security Question: What is your mother's maiden name?</label>
+                    <input type="text" id="securityQuestion" placeholder="Enter answer" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="pinCode">4-Digit Security PIN:</label>
+                    <input type="password" id="pinCode" placeholder="Enter 4-digit PIN" maxlength="4" required>
+                </div>
+                
+                <!-- Biometric simulation -->
+                <div class="captcha-container">
+                    <h4>🖐️ Biometric Verification</h4>
+                    <p>Hold any key for 3 seconds to simulate biometric scan</p>
+                    <div id="biometricProgress" style="width: 100%; height: 10px; background: #e0e0e0; border-radius: 5px; margin: 10px 0;">
+                        <div style="width: 0%; height: 100%; background: #28a745; border-radius: 5px; transition: width 0.1s;" id="biometricBar"></div>
+                    </div>
+                    <p id="biometricStatus">Ready for biometric scan...</p>
+                </div>
+                
+                <button class="btn btn-primary" onclick="proceedToPayment()" id="securityProceedBtn" disabled>
+                    🚀 Proceed to Secure Payment
+                </button>
+            </div>
+            
+            <!-- Step 4: Ultra Secure Payment -->
+            <div id="step4" class="step hidden">
+                <h3>💳 Ultra Secure Payment Gateway</h3>
+                <div class="alert alert-success">
+                    <strong>🛡️ Maximum Security Level Achieved!</strong><br>
+                    All security checks passed. Payment portal is now accessible.
+                </div>
+                
+                <div class="invoice-display">
+                    <p><strong>Final Payment Confirmation:</strong></p>
+                    <p>Customer: <span id="paymentCustomerName"></span></p>
+                    <p>Email: <span id="paymentEmail"></span></p>
+                    <p>Amount: Rs. <span id="paymentAmountFinal"></span></p>
+                    <p>Invoice: <span id="paymentInvoiceNumber"></span></p>
+                    <p>Session ID: <span id="sessionId"></span></p>
+                </div>
+                
+                <div class="input-group">
+                    <label for="cardNumber">Card Number (Encrypted):</label>
+                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label for="expiryDate">Expiry:</label>
+                        <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5">
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label for="cvv">CVV:</label>
+                        <input type="password" id="cvv" placeholder="123" maxlength="3">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="finalPIN">Confirm Transaction PIN:</label>
+                    <input type="password" id="finalPIN" placeholder="Enter your 6-digit PIN" maxlength="6">
+                </div>
+                
+                <button class="btn btn-success" onclick="processSecurePayment()">
+                    💳 Process Ultra Secure Payment
+                </button>
+            </div>
+            
+            <!-- Blocked State -->
+            <div id="blockedState" class="blocked hidden">
+                <h2>🚫 Account Temporarily Blocked</h2>
+                <p>Too many failed attempts detected. Please try again in 30 minutes.</p>
+                <p><strong>Reason:</strong> <span id="blockReason">Multiple verification failures</span></p>
+                <p><strong>Unblock Time:</strong> <span id="unblockTime"></span></p>
+            </div>
+            
+            <!-- Payment Processing -->
+            <div id="processing" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Processing ultra-secure payment...</p>
+                <p><small>Verifying through multiple security layers...</small></p>
+            </div>
+            
+            <!-- Payment Success -->
+            <div id="success" class="payment-success hidden">
+                <div class="success-icon">✅</div>
+                <h2 style="color: #28a745; margin-bottom: 15px;">Payment Successful!</h2>
+                <div class="alert alert-success">
+                    <p><strong>Transaction ID:</strong> <span id="transactionId"></span></p>
+                    <p><strong>Invoice:</strong> <span id="successInvoiceNumber"></span></p>
+                    <p><strong>Amount:</strong> Rs. <span id="successAmount"></span></p>
+                    <p><strong>Security Level:</strong> Maximum</p>
+                    <p><strong>Timestamp:</strong> <span id="successTimestamp"></span></p>
+                </div>
+                <button class="btn btn-primary" onclick="startOver()">🔄 New Secure Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Security Variables
+        let serverInvoices = {};
+        let currentSession = {};
+        let securityAttempts = 3;
+        let isBlocked = false;
+        let invoiceTimer = 600; // 10 minutes
+        let sessionId = '';
+        let otpCode = '';
+        let otpAttempts = 3;
+        let deviceFingerprint = '';
+        let biometricVerified = false;
+        let resendTimer = 60;
+        let activityLog = [];
+        let adminPollingInterval;
+
+        // API Base URL - change this if your server runs on different port
+        const API_BASE_URL = 'http://localhost:3000/api';
+
+        // Security Functions
+        function logActivity(action, status = 'success') {
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = {
+                time: timestamp,
+                action: action,
+                status: status,
+                ip: '192.168.1.100' // Simulated
+            };
+            activityLog.unshift(entry);
+            updateActivityLog();
+        }
+
+        function updateActivityLog() {
+            const logContainer = document.getElementById('logEntries');
+            const activityLogDiv = document.getElementById('activityLog');
+            
+            if (activityLog.length > 0) {
+                activityLogDiv.classList.remove('hidden');
+                logContainer.innerHTML = activityLog.slice(0, 10).map(entry => 
+                    `<div class="log-entry">
+                        ${entry.time} - ${entry.action} 
+                        <span style="color: ${entry.status === 'success' ? '#28a745' : '#dc3545'};">
+                            [${entry.status.toUpperCase()}]
+                        </span>
+                    </div>`
+                ).join('');
+            }
+        }
+
+        function generateDeviceFingerprint() {
+            const canvas = document.getElementById('fingerprintCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Simulate device fingerprinting
+            const userAgent = navigator.userAgent;
+            const screen = `${window.screen.width}x${window.screen.height}`;
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            
+            deviceFingerprint = btoa(`${userAgent}-${screen}-${timezone}-${Date.now()}`).substr(0, 16);
+            
+            // Canvas drawing for verification
+            let isDrawing = false;
+            canvas.addEventListener('mousedown', () => {
+                isDrawing = true;
+                document.getElementById('deviceVerifyBtn').disabled = false;
+            });
+            
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDrawing) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    ctx.fillStyle = '#007bff';
+                    ctx.fillRect(x-2, y-2, 4, 4);
+                }
+            });
+            
+            canvas.addEventListener('mouseup', () => isDrawing = false);
+        }
+
+        function verifyDevice() {
+            logActivity('Device fingerprint verification started');
+            
+            setTimeout(() => {
+                sessionId = 'SES-' + Date.now().toString(36).toUpperCase();
+                logActivity('Device verified successfully');
+                document.getElementById('step0').classList.add('hidden');
+                document.getElementById('step1').classList.remove('hidden');
+                updateStepIndicator(1);
+            }, 2000);
+        }
+
+        function generateCaptcha() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            const operations = ['+', '-', '*'];
+            const op = operations[Math.floor(Math.random() * operations.length)];
+            
+            let answer;
+            switch(op) {
+                case '+': answer = num1 + num2; break;
+                case '-': answer = num1 - num2; break;
+                case '*': answer = num1 * num2; break;
+            }
+            
+            document.getElementById('captchaQuestion').textContent = `${num1} ${op} ${num2} = ?`;
+            return answer;
+        }
+
+        function validateInputStrength(inputId, strengthId, value) {
+            const strengthBar = document.getElementById(strengthId);
+            let strength = 0;
+            
+            if (inputId === 'nameStrength') {
+                if (value.length > 3) strength += 25;
+                if (value.includes(' ')) strength += 25;
+                if (value.length > 10) strength += 25;
+                if (!/\d/.test(value)) strength += 25;
+            } else if (inputId === 'emailStrength') {
+                if (value.includes('@')) strength += 25;
+                if (value.includes('.')) strength += 25;
+                if (value.length > 10) strength += 25;
+                if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) strength += 25;
+            }
+            
+            strengthBar.style.width = strength + '%';
+            strengthBar.style.backgroundColor = 
+                strength < 50 ? '#dc3545' : 
+                strength < 75 ? '#ffc107' : '#28a745';
+        }
+
+        function generateOTP() {
+            return Math.floor(1000 + Math.random() * 9000).toString();
+        }
+
+        function startInvoiceTimer() {
+            const timerElement = document.getElementById('invoiceTimer');
+            const timer = setInterval(() => {
+                invoiceTimer--;
+                const minutes = Math.floor(invoiceTimer / 60);
+                const seconds = invoiceTimer % 60;
+                timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (invoiceTimer <= 0) {
+                    clearInterval(timer);
+                    alert('Invoice expired! Please start over.');
+                    startOver();
+                }
+            }, 1000);
+        }
+
+        let captchaAnswer = generateCaptcha();
+
+        // API Functions
+        async function sendOTPToEmail(customerData) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/generate-invoice`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(customerData)
+                });
+
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Error sending OTP:', error);
+                throw new Error('Failed to send OTP. Please check your internet connection.');
+            }
+        }
+
+        async function verifyOTPFromServer(email, otp, invoiceNumber) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/verify-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email,
+                        otp,
+                        invoiceNumber
+                    })
+                });
+
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Error verifying OTP:', error);
+                throw new Error('Failed to verify OTP. Please try again.');
+            }
+        }
+
+        async function resendOTPFromServer(email, invoiceNumber) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/resend-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email,
+                        invoiceNumber
+                    })
+                });
+
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Error resending OTP:', error);
+                throw new Error('Failed to resend OTP. Please try again.');
+            }
+        }
+
+        async function generateInvoice() {
+            if (securityAttempts <= 0 || isBlocked) {
+                showBlockedState('Too many failed attempts');
+                return;
+            }
+
+            const name = document.getElementById('customerName').value.trim();
+            const email = document.getElementById('customerEmail').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const amount = document.getElementById('paymentAmount').value.trim();
+            const captchaInput = parseInt(document.getElementById('captchaAnswer').value);
+
+            // Enhanced Validation
+            if (!name || !email || !phone || !amount) {
+                logActivity('Form validation failed - missing fields', 'error');
+                alert('❌ Please fill in all required fields');
+                securityAttempts--;
+                updateAttemptsDisplay();
+                return;
+            }
+
+            if (!/^[a-zA-Z\s]{3,50}$/.test(name)) {
+                logActivity('Name validation failed', 'error');
+                alert('❌ Please enter a valid full name (letters only, 3-50 characters)');
+                securityAttempts--;
+                updateAttemptsDisplay();
+                return;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                logActivity('Email validation failed', 'error');
+                alert('❌ Please enter a valid email address');
+                securityAttempts--;
+                updateAttemptsDisplay();
+                return;
+            }
+
+            if (!/^\+94\d{9}$/.test(phone)) {
+                logActivity('Phone validation failed', 'error');
+                alert('❌ Please enter a valid Sri Lankan mobile number (+94XXXXXXXXX)');
+                securityAttempts--;
+                updateAttemptsDisplay();
+                return;
+            }
+
+            if (parseFloat(amount) <= 0 || parseFloat(amount) > 100000) {
+                logActivity('Amount validation failed', 'error');
+                alert('❌ Amount must be between Rs. 1 and Rs. 100,000');
+                securityAttempts--;
+                updateAttemptsDisplay();
+                return;
+            }
+
+            if (captchaInput !== captchaAnswer) {
+                logActivity('CAPTCHA validation failed', 'error');
+                alert('❌ Incorrect CAPTCHA answer');
+                captchaAnswer = generateCaptcha();
+                document.getElementById('captchaAnswer').value = '';
+                securityAttempts--;
+                updateAttemptsDisplay();
+                return;
+            }
+
+            // Show loading state
+            const generateBtn = document.getElementById('generateBtn');
+            const originalText = generateBtn.textContent;
+            generateBtn.disabled = true;
+            generateBtn.textContent = '📧 Sending OTP...';
+
+            try {
+                // Send OTP via API
+                const customerData = {
+                    customerName: name,
+                    customerEmail: email,
+                    customerPhone: phone,
+                    paymentAmount: parseFloat(amount)
+                };
+
+                const result = await sendOTPToEmail(customerData);
+
+                if (result.success) {
+                    // Store current session data
+                    currentSession = {
+                        ...customerData,
+                        invoiceNumber: result.data.invoiceNumber,
+                        sessionId: result.data.sessionId
+                    };
+
+                    // Display invoice and masked email
+                    document.getElementById('displayInvoiceNumber').textContent = result.data.invoiceNumber;
+                    document.getElementById('maskedEmail').textContent = result.data.maskedEmail;
+
+                    logActivity('Invoice generated and OTP sent to email');
+                    alert('✅ OTP has been sent to your email address. Please check your inbox.');
+
+                    // Start timer and move to next step
+                    startInvoiceTimer();
+                    startResendTimer();
+                    updateStepIndicator(2);
+                    document.getElementById('step1').classList.add('hidden');
+                    document.getElementById('step2').classList.remove('hidden');
+                } else {
+                    throw new Error(result.message || 'Failed to send OTP');
+                }
+
+            } catch (error) {
+                logActivity('OTP sending failed', 'error');
+                alert('❌ ' + error.message);
+                securityAttempts--;
+                updateAttemptsDisplay();
+            } finally {
+                // Restore button state
+                generateBtn.disabled = false;
+                generateBtn.textContent = originalText;
+            }
+        }
+
+        function updateAttemptsDisplay() {
+            document.getElementById('attemptsCount').textContent = securityAttempts;
+            if (securityAttempts <= 1) {
+                document.getElementById('attemptsLeft').style.background = '#f8d7da';
+                document.getElementById('attemptsLeft').style.borderColor = '#f5c6cb';
+                document.getElementById('attemptsLeft').style.color = '#721c24';
+            }
+            if (securityAttempts <= 0) {
+                showBlockedState('Maximum verification attempts exceeded');
+            }
+        }
+
+        function startResendTimer() {
+            const resendBtn = document.getElementById('resendBtn');
+            resendTimer = 60;
+            
+            const timer = setInterval(() => {
+                resendTimer--;
+                resendBtn.textContent = `� Resend OTP (${resendTimer}s)`;
+                resendBtn.disabled = true;
+                
+                if (resendTimer <= 0) {
+                    clearInterval(timer);
+                    resendBtn.textContent = '� Resend OTP';
+                    resendBtn.disabled = false;
+                }
+            }, 1000);
+        }
+
+        async function resendOTP() {
+            if (otpAttempts <= 0) {
+                alert('❌ Maximum OTP email requests exceeded');
+                return;
+            }
+
+            if (!currentSession.customerEmail || !currentSession.invoiceNumber) {
+                alert('❌ Session expired. Please start over.');
+                return;
+            }
+
+            const resendBtn = document.getElementById('resendBtn');
+            const originalText = resendBtn.textContent;
+            resendBtn.disabled = true;
+            resendBtn.textContent = '📧 Sending...';
+
+            try {
+                const result = await resendOTPFromServer(
+                    currentSession.customerEmail, 
+                    currentSession.invoiceNumber
+                );
+
+                if (result.success) {
+                    alert('✅ New OTP has been sent to your email address.');
+                    logActivity('OTP resent to email');
+                    startResendTimer();
+                } else {
+                    throw new Error(result.message || 'Failed to resend OTP');
+                }
+
+            } catch (error) {
+                logActivity('OTP resend failed', 'error');
+                alert('❌ ' + error.message);
+                otpAttempts--;
+            } finally {
+                resendBtn.disabled = false;
+                resendBtn.textContent = originalText;
+            }
+        }
+
+        async function verifyInvoiceAndOTP() {
+            const inputInvoice = document.getElementById('invoiceInput').value.trim().toUpperCase();
+            const otp = document.getElementById('otp1').value + 
+                       document.getElementById('otp2').value + 
+                       document.getElementById('otp3').value + 
+                       document.getElementById('otp4').value;
+            
+            const messageDiv = document.getElementById('verificationMessage');
+
+            if (!inputInvoice || otp.length !== 4) {
+                showMessage(messageDiv, '❌ Please enter both invoice number and complete OTP', 'danger');
+                return;
+            }
+
+            if (!currentSession.customerEmail) {
+                showMessage(messageDiv, '❌ Session expired. Please start over.', 'danger');
+                return;
+            }
+
+            try {
+                showMessage(messageDiv, '🔍 Verifying OTP...', 'info');
+                
+                const result = await verifyOTPFromServer(
+                    currentSession.customerEmail, 
+                    otp, 
+                    inputInvoice
+                );
+
+                if (result.success) {
+                    logActivity('Invoice and OTP verified successfully');
+                    showMessage(messageDiv, '✅ Verification successful!', 'success');
+                    
+                    setTimeout(() => {
+                        // Move to admin verification step instead of step 3
+                        updateStepIndicator(2.5);
+                        document.getElementById('step2').classList.add('hidden');
+                        document.getElementById('step2_5').classList.remove('hidden');
+                        
+                        // Set the invoice number for admin verification
+                        document.getElementById('adminVerifyInvoiceNumber').textContent = currentSession.invoiceNumber;
+                        
+                        // Start automatic polling for admin approval
+                        startAdminPolling();
+                    }, 1000);
+                } else {
+                    logActivity('OTP verification failed', 'error');
+                    showMessage(messageDiv, '❌ ' + result.message, 'danger');
+                    
+                    if (result.attemptsLeft !== undefined && result.attemptsLeft <= 0) {
+                        showBlockedState('Maximum email OTP attempts exceeded');
+                    }
+                }
+
+            } catch (error) {
+                logActivity('OTP verification error', 'error');
+                showMessage(messageDiv, '❌ ' + error.message, 'danger');
+            }
+        }
+
+        // Admin Polling Functions
+        function startAdminPolling() {
+            const messageDiv = document.getElementById('adminVerificationMessage');
+            showMessage(messageDiv, '🔄 Automatically checking for admin approval...', 'info');
+            
+            // Clear any existing polling interval
+            if (adminPollingInterval) {
+                clearInterval(adminPollingInterval);
+            }
+            
+            // Start polling every 3 seconds
+            adminPollingInterval = setInterval(async () => {
+                await checkAdminApprovalAutomatic();
+            }, 3000);
+            
+            // Also check immediately
+            checkAdminApprovalAutomatic();
+        }
+        
+        function stopAdminPolling() {
+            if (adminPollingInterval) {
+                clearInterval(adminPollingInterval);
+                adminPollingInterval = null;
+            }
+        }
+        
+        async function checkAdminApprovalAutomatic() {
+            if (!currentSession.invoiceNumber) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/check-admin-approval`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        invoiceNumber: currentSession.invoiceNumber
+                    })
+                });
+
+                const result = await response.json();
+                const messageDiv = document.getElementById('adminVerificationMessage');
+
+                if (result.success) {
+                    if (result.approved) {
+                        stopAdminPolling();
+                        showMessage(messageDiv, '✅ Admin has approved your invoice! Proceeding automatically...', 'success');
+                        logActivity('Admin approval confirmed - auto-proceeding to security checks');
+                        
+                        setTimeout(() => {
+                            updateStepIndicator(4);
+                            document.getElementById('step2_5').classList.add('hidden');
+                            document.getElementById('step3').classList.remove('hidden');
+                            
+                            // Initialize security requirements check for step 3
+                            checkAllSecurityRequirements();
+                        }, 2000);
+                    } else if (result.status === 'rejected') {
+                        stopAdminPolling();
+                        showMessage(messageDiv, '❌ Your invoice has been rejected by admin. Redirecting...', 'danger');
+                        setTimeout(() => {
+                            startOver();
+                        }, 3000);
+                    }
+                    // If still pending, continue polling silently
+                }
+
+            } catch (error) {
+                console.log('Polling error (continuing):', error.message);
+                // Continue polling even if there's an error
+            }
+        }
+
+        // Admin Verification Functions
+        async function checkAdminApproval() {
+            const userInvoiceInput = document.getElementById('userInvoiceVerify').value.trim().toUpperCase();
+            const messageDiv = document.getElementById('adminVerificationMessage');
+            const checkBtn = document.getElementById('checkApprovalBtn');
+
+            if (!userInvoiceInput) {
+                showMessage(messageDiv, '❌ Please enter your invoice number', 'danger');
+                return;
+            }
+
+            if (userInvoiceInput !== currentSession.invoiceNumber) {
+                showMessage(messageDiv, '❌ Invoice number does not match your session', 'danger');
+                return;
+            }
+
+            // Show loading state
+            const originalText = checkBtn.textContent;
+            checkBtn.disabled = true;
+            checkBtn.textContent = '🔍 Checking...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/check-admin-approval`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        invoiceNumber: userInvoiceInput
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    if (result.approved) {
+                        showMessage(messageDiv, '✅ Admin has approved your invoice! Proceeding to next step...', 'success');
+                        logActivity('Admin approval confirmed - proceeding to security checks');
+                        
+                        setTimeout(() => {
+                            updateStepIndicator(4);
+                            document.getElementById('step2_5').classList.add('hidden');
+                            document.getElementById('step3').classList.remove('hidden');
+                            
+                            // Initialize security requirements check for step 3
+                            checkAllSecurityRequirements();
+                        }, 2000);
+                    } else {
+                        if (result.status === 'rejected') {
+                            showMessage(messageDiv, '❌ Your invoice has been rejected by admin. Please start over.', 'danger');
+                            setTimeout(() => {
+                                startOver();
+                            }, 3000);
+                        } else {
+                            showMessage(messageDiv, '⏳ Invoice is still pending admin approval. Please wait and try again.', 'info');
+                        }
+                    }
+                } else {
+                    throw new Error(result.message || 'Failed to check approval status');
+                }
+
+            } catch (error) {
+                logActivity('Admin approval check failed', 'error');
+                showMessage(messageDiv, '❌ ' + error.message, 'danger');
+            } finally {
+                // Restore button state
+                checkBtn.disabled = false;
+                checkBtn.textContent = originalText;
+            }
+        }
+
+        // Biometric simulation
+        let biometricKeyHeld = false;
+        let biometricProgress = 0;
+
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('step3').classList.contains('hidden')) return;
+            
+            if (!biometricKeyHeld) {
+                biometricKeyHeld = true;
+                biometricProgress = 0;
+                document.getElementById('biometricStatus').textContent = 'Scanning...';
+                
+                const interval = setInterval(() => {
+                    biometricProgress += 2;
+                    document.getElementById('biometricBar').style.width = biometricProgress + '%';
+                    
+                    if (biometricProgress >= 100) {
+                        clearInterval(interval);
+                        biometricVerified = true;
+                        document.getElementById('biometricStatus').textContent = '✅ Biometric verified!';
+                        document.getElementById('securityProceedBtn').disabled = false;
+                        logActivity('Biometric verification completed');
+                        checkAllSecurityRequirements();
+                    }
+                }, 30);
+            }
+        });
+
+        document.addEventListener('keyup', () => {
+            biometricKeyHeld = false;
+            if (biometricProgress < 100) {
+                biometricProgress = 0;
+                document.getElementById('biometricBar').style.width = '0%';
+                document.getElementById('biometricStatus').textContent = 'Scan interrupted. Please try again.';
+            }
+        });
+
+        function checkAllSecurityRequirements() {
+            const securityAnswer = document.getElementById('securityQuestion').value.trim();
+            const pinCode = document.getElementById('pinCode').value.trim();
+            const proceedBtn = document.getElementById('securityProceedBtn');
+            
+            // Check if all requirements are met
+            const hasSecurityAnswer = securityAnswer && securityAnswer.length >= 2;
+            const hasValidPin = /^\d{4}$/.test(pinCode);
+            const hasBiometric = biometricVerified;
+            
+            if (hasSecurityAnswer && hasValidPin && hasBiometric) {
+                proceedBtn.disabled = false;
+                proceedBtn.textContent = '🚀 Proceed to Secure Payment';
+                proceedBtn.style.opacity = '1';
+            } else {
+                proceedBtn.disabled = true;
+                let missing = [];
+                if (!hasSecurityAnswer) missing.push('Security Answer');
+                if (!hasValidPin) missing.push('4-digit PIN');
+                if (!hasBiometric) missing.push('Biometric Verification');
+                
+                proceedBtn.textContent = `❌ Complete: ${missing.join(', ')}`;
+                proceedBtn.style.opacity = '0.7';
+            }
+        }
+
+        function proceedToPayment() {
+            const securityAnswer = document.getElementById('securityQuestion').value.trim();
+            const pinCode = document.getElementById('pinCode').value.trim();
+
+            console.log('proceedToPayment called');
+            console.log('Security Answer:', securityAnswer);
+            console.log('PIN Code:', pinCode);
+            console.log('Biometric Verified:', biometricVerified);
+            console.log('Current Session:', currentSession);
+
+            if (!securityAnswer || securityAnswer.length < 2) {
+                alert('❌ Please provide a valid answer to the security question');
+                return;
+            }
+
+            if (!/^\d{4}$/.test(pinCode)) {
+                alert('❌ Please enter a valid 4-digit PIN');
+                return;
+            }
+
+            if (!biometricVerified) {
+                alert('❌ Biometric verification required');
+                return;
+            }
+
+            // Populate final payment details
+            document.getElementById('paymentCustomerName').textContent = currentSession.customerName;
+            document.getElementById('paymentEmail').textContent = currentSession.customerEmail;
+            document.getElementById('paymentAmountFinal').textContent = currentSession.paymentAmount.toFixed(2);
+            document.getElementById('paymentInvoiceNumber').textContent = currentSession.invoiceNumber;
+            document.getElementById('sessionId').textContent = sessionId;
+
+            logActivity('All security checks passed');
+            updateStepIndicator(5);
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+            
+            console.log('Navigation completed successfully');
+        }
+
+        function processSecurePayment() {
+            const cardNumber = document.getElementById('cardNumber').value.trim();
+            const expiryDate = document.getElementById('expiryDate').value.trim();
+            const cvv = document.getElementById('cvv').value.trim();
+            const finalPIN = document.getElementById('finalPIN').value.trim();
+
+            // Enhanced validation
+            if (!cardNumber || !expiryDate || !cvv || !finalPIN) {
+                alert('❌ Please fill in all payment details');
+                return;
+            }
+
+            if (cardNumber.replace(/\s/g, '').length < 13) {
+                alert('❌ Please enter a valid card number');
+                return;
+            }
+
+            if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+                alert('❌ Please enter expiry date in MM/YY format');
+                return;
+            }
+
+            if (cvv.length < 3) {
+                alert('❌ Please enter a valid CVV');
+                return;
+            }
+
+            if (!/^\d{6}$/.test(finalPIN)) {
+                alert('❌ Please enter a valid 6-digit transaction PIN');
+                return;
+            }
+
+            // Show processing with enhanced security messages
+            document.getElementById('step4').classList.add('hidden');
+            document.getElementById('processing').classList.remove('hidden');
+
+            logActivity('Payment processing initiated');
+
+            // Simulate secure payment processing
+            setTimeout(() => {
+                const transactionId = 'TXN-' + Date.now().toString(36).toUpperCase() + '-SEC';
+                
+                // Update server records
+                if (serverInvoices[currentSession.invoiceNumber]) {
+                    serverInvoices[currentSession.invoiceNumber].status = 'paid';
+                    serverInvoices[currentSession.invoiceNumber].transactionId = transactionId;
+                    serverInvoices[currentSession.invoiceNumber].paymentTimestamp = Date.now();
+                }
+
+                // Show success with all details
+                document.getElementById('transactionId').textContent = transactionId;
+                document.getElementById('successInvoiceNumber').textContent = currentSession.invoiceNumber;
+                document.getElementById('successAmount').textContent = currentSession.paymentAmount.toFixed(2);
+                document.getElementById('successTimestamp').textContent = new Date().toLocaleString();
+                
+                logActivity('Payment completed successfully');
+                
+                document.getElementById('processing').classList.add('hidden');
+                document.getElementById('success').classList.remove('hidden');
+                
+                updateStepIndicator(5, true);
+            }, 4000);
+        }
+
+        function showBlockedState(reason) {
+            isBlocked = true;
+            const unblockTime = new Date(Date.now() + 30 * 60000); // 30 minutes
+            document.getElementById('blockReason').textContent = reason;
+            document.getElementById('unblockTime').textContent = unblockTime.toLocaleTimeString();
+            
+            // Hide all steps and show blocked state
+            document.querySelectorAll('.step').forEach(step => step.classList.add('hidden'));
+            document.getElementById('blockedState').classList.remove('hidden');
+            
+            logActivity('Account blocked: ' + reason, 'error');
+        }
+
+        function showMessage(element, message, type) {
+            element.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        }
+
+        function updateStepIndicator(activeStep, completed = false) {
+            document.querySelectorAll('.step-item').forEach((item, index) => {
+                item.classList.remove('active', 'completed');
+                
+                // Handle step 2.5 (admin verification)
+                let stepNumber;
+                if (index === 0) stepNumber = 1;
+                else if (index === 1) stepNumber = 2;
+                else if (index === 2) stepNumber = 2.5;
+                else if (index === 3) stepNumber = 4;
+                else if (index === 4) stepNumber = 5;
+                
+                if (stepNumber < activeStep || (stepNumber === 2.5 && activeStep >= 4)) {
+                    item.classList.add('completed');
+                } else if (stepNumber === activeStep) {
+                    item.classList.add('active');
+                }
+            });
+            
+            if (completed) {
+                document.querySelectorAll('.step-item').forEach(item => {
+                    item.classList.add('completed');
+                    item.classList.remove('active');
+                });
+            }
+        }
+
+        function generateUniqueInvoiceNumber() {
+            const timestamp = Date.now().toString(36);
+            const random = Math.random().toString(36).substr(2, 5);
+            const checksum = (timestamp + random).split('').reduce((a, b) => a + b.charCodeAt(0), 0) % 100;
+            return `INV-${timestamp.toUpperCase()}-${random.toUpperCase()}-${checksum.toString().padStart(2, '0')}`;
+        }
+
+        function startOver() {
+            // Stop admin polling if active
+            stopAdminPolling();
+            
+            // Reset all security variables
+            currentSession = {};
+            securityAttempts = 3;
+            isBlocked = false;
+            invoiceTimer = 600;
+            sessionId = '';
+            otpCode = '';
+            otpAttempts = 3;
+            biometricVerified = false;
+            resendTimer = 60;
+            activityLog = [];
+            
+            // Reset form fields
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerEmail').value = '';
+            document.getElementById('customerPhone').value = '';
+            document.getElementById('paymentAmount').value = '';
+            document.getElementById('captchaAnswer').value = '';
+            document.getElementById('invoiceInput').value = '';
+            document.getElementById('otp1').value = '';
+            document.getElementById('otp2').value = '';
+            document.getElementById('otp3').value = '';
+            document.getElementById('otp4').value = '';
+            document.getElementById('securityQuestion').value = '';
+            document.getElementById('pinCode').value = '';
+            document.getElementById('cardNumber').value = '';
+            document.getElementById('expiryDate').value = '';
+            document.getElementById('cvv').value = '';
+            document.getElementById('finalPIN').value = '';
+            document.getElementById('userInvoiceVerify').value = '';
+            
+            // Reset views
+            document.getElementById('success').classList.add('hidden');
+            document.getElementById('processing').classList.add('hidden');
+            document.getElementById('step4').classList.add('hidden');
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step2_5').classList.add('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('blockedState').classList.add('hidden');
+            document.getElementById('step0').classList.remove('hidden');
+            document.getElementById('activityLog').classList.add('hidden');
+            
+            // Reset UI elements
+            document.getElementById('attemptsCount').textContent = '3';
+            document.getElementById('attemptsLeft').style.background = '#fff3cd';
+            document.getElementById('biometricBar').style.width = '0%';
+            document.getElementById('biometricStatus').textContent = 'Ready for biometric scan...';
+            document.getElementById('securityProceedBtn').disabled = true;
+            document.getElementById('deviceVerifyBtn').disabled = true;
+            
+            // Clear messages
+            document.getElementById('verificationMessage').innerHTML = '';
+            document.getElementById('adminVerificationMessage').innerHTML = '';
+            document.getElementById('logEntries').innerHTML = '';
+            
+            // Reset step indicator
+            updateStepIndicator(1);
+            
+            // Generate new captcha and device fingerprint
+            captchaAnswer = generateCaptcha();
+            generateDeviceFingerprint();
+            
+            logActivity('System reset - new session started');
+        }
+
+        // Input formatting and validation
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
+            let formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
+            if (formattedValue.length > 19) formattedValue = formattedValue.substr(0, 19);
+            this.value = formattedValue;
+        });
+
+        document.getElementById('expiryDate').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substr(0, 2) + '/' + value.substr(2, 2);
+            }
+            this.value = value;
+        });
+
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        document.getElementById('pinCode').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        document.getElementById('finalPIN').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        // OTP input handling
+        document.querySelectorAll('.otp-input').forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                if (this.value.length === 1) {
+                    const nextInput = document.querySelectorAll('.otp-input')[index + 1];
+                    if (nextInput) nextInput.focus();
+                }
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value === '') {
+                    const prevInput = document.querySelectorAll('.otp-input')[index - 1];
+                    if (prevInput) prevInput.focus();
+                }
+            });
+        });
+
+        // Input strength monitoring
+        document.getElementById('customerName').addEventListener('input', function(e) {
+            validateInputStrength('nameStrength', 'nameStrength', this.value);
+        });
+
+        document.getElementById('customerEmail').addEventListener('input', function(e) {
+            validateInputStrength('emailStrength', 'emailStrength', this.value);
+        });
+
+        // Security requirements checking
+        document.getElementById('securityQuestion').addEventListener('input', function(e) {
+            checkAllSecurityRequirements();
+        });
+
+        document.getElementById('pinCode').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+            checkAllSecurityRequirements();
+        });
+
+        // Initialize the system
+        document.addEventListener('DOMContentLoaded', function() {
+            generateDeviceFingerprint();
+            captchaAnswer = generateCaptcha();
+            logActivity('System initialized');
+        });
+
+        // Prevent right-click and some keyboard shortcuts for security
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                logActivity('Developer tools access attempt blocked', 'warning');
+            }
+        });
+
+        // Session timeout warning
+        setTimeout(() => {
+            if (!document.getElementById('success').classList.contains('hidden') === false) {
+                alert('⚠️ Session will expire in 5 minutes due to inactivity');
+            }
+        }, 25 * 60 * 1000); // 25 minutes
+
+        // Auto-logout after 30 minutes
+        setTimeout(() => {
+            if (!isBlocked) {
+                alert('🔒 Session expired for security. Please start over.');
+                startOver();
+            }
+        }, 30 * 60 * 1000); // 30 minutes
+    </script>
+</body>
+</html>
