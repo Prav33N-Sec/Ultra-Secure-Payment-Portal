@@ -1,4 +1,4 @@
-# Ultra Secure Payment Portal - Backend Setup
+# Ultra Secure Payment Portal
 
 This guide will help you set up the Node.js backend to send real OTP emails.
 
@@ -136,5 +136,6 @@ For production:
 6. Add logging and monitoring
 
 ## Support
+
 
 For issues or questions, check the server console for error messages and ensure all dependencies are properly installed.
