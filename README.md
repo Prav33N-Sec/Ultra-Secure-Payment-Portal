@@ -1,7 +1,5 @@
 # Ultra Secure Payment Portal
 
-This guide will help you set up the Node.js backend to send real OTP emails.
-
 ## Prerequisites
 
 - Node.js (version 14 or higher)
@@ -139,3 +137,4 @@ For production:
 
 
 For issues or questions, check the server console for error messages and ensure all dependencies are properly installed.
+
